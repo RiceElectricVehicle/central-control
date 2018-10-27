@@ -6,33 +6,22 @@
 
 class CurrentSense {
  public:
-  CurrentSense(uint8_t newPin, float newRes, bool parallel);
+  CurrentSense(uint8_t newCurrentPin, float newRes);
 
   float resistance;
 
-  uint8_t pin;
+  uint8_t currentPin;
 
   float getCurrent();
-
-  void setResistance(float newRes);
 };
 
-CurrentSense::CurrentSense(uint8_t newPin, float newRes, bool parallel) {
-  if (parallel) {
-    resistance = newRes / 2.0;
-  } else {
-    resistance = newRes;
-  }
-  pin = newPin;
+CurrentSense::CurrentSense(uint8_t newPin, float newRes) {
+  currentPin = newPin;
 }
 
 float CurrentSense::getCurrent() {
-  int val = 5.0 * analogRead(pin) / 1023.0;
-  return val;
-}
-
-void CurrentSense::setResistance(float newRes) {
-  resistance = newRes;
+  int val = 5.0 * analogRead(currentPin) / 1023.0;
+  return val / resistance;
 }
 
 #endif  // CURRENTSENSE_H
