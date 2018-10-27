@@ -1,11 +1,12 @@
 #include <Arduino.h>
 #include <pins.h>
+#define PWM_FREQ 14648.437
 
 void setup() {
   // set PWM frequency, (not 10kHz, 14k is chosen due to H/W)
-  analogWriteFrequency(PWM_OUT, 14648.437);
+  analogWriteFrequency(PWM_OUT, PWM_FREQ);
   // analogWrite takes values from 0-4095, 4096 for HIGH
-  analogWriteResolution(PWM_OUT);
+  analogWriteResolution(12);
 }
 
 void loop() {
