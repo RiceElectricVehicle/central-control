@@ -1,8 +1,7 @@
-void setup() {
+#include <pins.h>
 
+void setup() {
 }
 
-
 void loop() {
-
 }
