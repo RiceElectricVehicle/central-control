@@ -6,7 +6,6 @@
 #define RESISTANCE .047
 class Motor {
  private:
-  CurrentSense currentObj(OP_IN, RESISTANCE, true);
   PID pidObj();
   float current;
   float voltage;
@@ -14,5 +13,8 @@ class Motor {
   float setPoint;
 
  public:
+  Motor();
   void setPower();
-}
+};
+
+#endif

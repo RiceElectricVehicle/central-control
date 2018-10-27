@@ -1,6 +1,9 @@
 #include <Arduino.h>
+#include <Motor.h>
 #include <pins.h>
 #define PWM_FREQ 14648.437
+
+Motor motor1();
 
 void setup() {
   // set PWM frequency, (not 10kHz, 14k is chosen due to H/W)
