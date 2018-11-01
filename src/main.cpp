@@ -17,4 +17,7 @@ void loop() {
     analogWrite(PWM_OUT, i);
     delay(100);
   }
+  // Get power setting from pedal
+  motor1.update_power(pedal_power);
+  // PIDCompute
 }
