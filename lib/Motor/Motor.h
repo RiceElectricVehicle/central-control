@@ -14,7 +14,9 @@ class Motor {
 
  public:
   Motor();
-  void setPower();
+  void update_power(); // Change mesuredPower
+  void setPower(float pedal_power);  // Change setpoint
+  float get_power(); // Get current power setting
 };
 
 #endif
