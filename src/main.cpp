@@ -4,6 +4,7 @@
 #include <avr/io.h>
 #include <pins.h>
 #define PWM_FREQ 14648.437
+
 Motor motor1(PWM_OUT1, CURRENT_IN1, VOLTAGE_IN1);
 Motor motor2(PWM_OUT2, CURRENT_IN2, VOLTAGE_IN2);
 volatile bool brk;
