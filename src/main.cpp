@@ -3,8 +3,6 @@
 #include <pins.h>
 #define PWM_FREQ 14648.437
 
-Motor motor1();
-
 void setup() {
   // set PWM frequency, (not 10kHz, 14k is chosen due to H/W)
   analogWriteFrequency(PWM_OUT, PWM_FREQ);
@@ -18,6 +16,4 @@ void loop() {
     delay(100);
   }
   // Get power setting from pedal
-  motor1.update_power(pedal_power);
-  // PIDCompute
 }
