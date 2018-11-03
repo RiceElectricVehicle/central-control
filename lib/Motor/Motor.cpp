@@ -6,9 +6,12 @@
 
 Motor::Motor(byte output_pin, byte current_pin, byte voltage_pin)
     : pid_obj(&measured_power, &out_power, &set_point, kp, ki, kd, DIRECT),
-      current_sense(current_pin, RESISTANCE) {
+      current_sense(motor_current, RESISTANCE) {
   // All values are set to zero now. What they should actually be should be
   // determined after discussion
+  motor_output = output_pin;
+  motor_current = current_pin;
+  motor_voltage = voltage_pin;
   current = 0;
   voltage = 0;  // Same as above
   measured_power = 0.0;
@@ -20,7 +23,9 @@ Motor::Motor(byte output_pin, byte current_pin, byte voltage_pin)
 }
 
 void Motor::update_power() {
-  current = current_sense.getCurrent();
+  current = current_sense.get_current();
+  voltage = current_sense.get_voltage();
+  measured_power = current * voltage;
 }
 
 void Motor::set_power(float pedal_power) {

@@ -18,6 +18,9 @@ class Motor {
   double kp;
   double ki;
   double kd;
+  byte motor_output; // Stores output pin
+  byte motor_current; // Stores current pin
+  byte motor_voltage; // Stores voltage pin
 
  public:
   Motor(byte output_pin, byte current_pin, byte voltage_pin);
