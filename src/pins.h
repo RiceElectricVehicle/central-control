@@ -9,7 +9,7 @@
 // LED to represent gatedriver underVoltage/overCurrent status
 #define FAULT_OUT 7
 // A0 - used for current sense opamp input
-#define OP_IN 14
+#define CURRENT_IN 14
 // A1 - used for pedal position input
 #define PEDAL_IN 15
 #define GPIO2 2

@@ -1,10 +1,12 @@
 #include <Arduino.h>
 #include <Motor.h>
+#include <avr/interrupt.h>
+#include <avr/io.h>
 #include <pins.h>
 #define PWM_FREQ 14648.437
 
 Motor motor1();
-bool brk;
+volatile bool brk;
 
 void setup() {
   // set PWM frequency, (not 10kHz, 14k is chosen due to H/W)
@@ -21,9 +23,8 @@ void loop() {
   }
   // Get power setting from pedal
   motor1.update_power(pedal_power);
-  motor1.pidObject.Compute();
-  if (brk == true)
-  {
+  motor1.pid_obj.Compute();
+  if (brk == true) {
     motor1.set_power(0);
   }
 }
