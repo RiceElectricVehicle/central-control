@@ -5,7 +5,7 @@
 #include <pins.h>
 #define PWM_FREQ 14648.437
 
-Motor motor1();
+Motor motor1(PWM_OUT, CURRENT_IN, CURRENT_IN);
 volatile bool brk;
 
 void setup() {
