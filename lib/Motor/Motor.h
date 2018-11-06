@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <CurrentSense.h>
 #include <PID_v1.h>
+#include <VoltageSense.h>
 #include <pins.h>
 
 #ifndef MOTOR_H
@@ -10,6 +11,7 @@
 class Motor {
  private:
   CurrentSense current_sense;
+  VoltageSense voltage_sense;
   double current;
   double voltage;
   double measured_power;
@@ -18,9 +20,9 @@ class Motor {
   double kp;
   double ki;
   double kd;
-  byte motor_output; // Stores output pin
-  byte motor_current; // Stores current pin
-  byte motor_voltage; // Stores voltage pin
+  byte motor_output;   // Stores output pin
+  byte motor_current;  // Stores current pin
+  byte motor_voltage;  // Stores voltage pin
 
  public:
   Motor(byte output_pin, byte current_pin, byte voltage_pin);
@@ -28,7 +30,7 @@ class Motor {
                 // outside
   void update_power();                // Change mesuredPower
   void set_power(float pedal_power);  // Change setpoint
-  float get_power();                  // Get current power setting
+  double get_power();                 // Get current power setting
 };
 
 #endif
