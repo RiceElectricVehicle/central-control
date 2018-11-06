@@ -18,10 +18,6 @@ void setup() {
 }
 
 void loop() {
-  for (int i = 0; i < 4096; i++) {
-    analogWrite(PWM_OUT1, i);
-    delay(100);
-  }
   // Get power setting from pedal
   motor1.update_power(pedal_power);
   motor1.pid_obj.Compute();
