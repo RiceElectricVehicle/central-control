@@ -1,8 +1,5 @@
 #include <Arduino.h>
-#include <CurrentSense.h>
 #include <Motor.h>
-#include <PID_v1.h>
-#define RESISTANCE 0.047
 
 Motor::Motor(byte output_pin, byte current_pin, byte voltage_pin)
     : pid_obj(&measured_power, &out_power, &set_point, kp, ki, kd, DIRECT),
@@ -27,10 +24,13 @@ void Motor::update_power() {
   current = current_sense.get_current();
   voltage = voltage_sense.get_voltage();
   measured_power = current * voltage;
+  // Ideally, we'd like to call this here. But this is an ISR.
+  // pid_obj.Compute();
 }
 
 void Motor::set_power(float pedal_power) {
   set_point = pedal_power;
+  pid_obj.Compute();
 }
 
 double Motor::get_power() {
