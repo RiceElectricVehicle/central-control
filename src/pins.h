@@ -21,7 +21,7 @@
 #define VOLTAGE_IN2 14  // Need to figure out
 
 // A1 - used for pedal position input
-#define PEDAL_IN 15
+#define PEDAL_IN 16
 #define GPIO2 2
 #define GPIO3 1
 #define GPIO4 0

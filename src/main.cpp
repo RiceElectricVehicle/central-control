@@ -5,7 +5,7 @@
 #include <avr/io.h>
 #include <pins.h>
 
-#define PWM_FREQ 14648.437
+#define PWM_FREQ 10000
 
 // Motor motor1(PWM_OUT1, CURRENT_IN1, VOLTAGE_IN1);
 // Motor motor2(PWM_OUT2, CURRENT_IN2, VOLTAGE_IN2);
@@ -23,26 +23,16 @@ void setup() {
   logger.init(115200);
   pinMode(STATUS, OUTPUT);
   logger.logg("Setup Done");
-}
-
-void loop() {
-  // Get power setting from pedal
-  logger.logi("Blinking satus LED");
+  delay(5000);
   // blink LED
+  logger.logi("Blinking satus LED");
   digitalWrite(STATUS, HIGH);
   delay(200);
   digitalWrite(STATUS, LOW);
   delay(200);
-  logger.logi("PWM Frequency test (5 seconds)");
-  analogWrite(PWM_OUT1, 1000);
-  delay(5000);
-  logger.logi("Going over dutycycles:");
-  char str[80];
-  // go over ducty cyle.
-  for (int i = 0; i < 4096; i++) {
-    sprintf(str, "DC: %d", i);
-    logger.logi(str);
-    analogWrite(PWM_OUT1, i);
-    delay(25);
-  }
+}
+
+void loop() {
+  pedal_power = 4 * analogRead(PEDAL_IN);
+  analogWrite(PWM_OUT1, pedal_power);
 }
