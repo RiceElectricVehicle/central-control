@@ -23,6 +23,8 @@ void fault_catch() {
 }
 
 void setup() {
+  pinMode(PWM_OUT1, OUTPUT);
+  digitalWrite(PWM_OUT1, HIGH);
   // set PWM frequency, (not 10kHz, 14k is chosen due to H/W)
   analogWriteFrequency(PWM_OUT1, PWM_FREQ);
   // analogWrite takes values from 0-4095, 4096 for HIGH
@@ -32,29 +34,27 @@ void setup() {
 
   pinMode(STATUS, OUTPUT);
   pinMode(FAULT_OUT, OUTPUT);
+  pinMode(FAULT_IN, INPUT);
 
-  logger.logg("Setup Done");
-
-  delay(5000);
+  // logger.logg("Setup Done");
 
   // blink LED
-  logger.logi("Blinking satus LED");
-  digitalWrite(STATUS, HIGH);
-  delay(200);
-  digitalWrite(STATUS, LOW);
-  delay(200);
+  // logger.logi("Blinking satus LED");
+  // digitalWrite(STATUS, HIGH);
+  // delay(200);
+  // digitalWrite(STATUS, LOW);
+  // delay(200);
 
   // disable interrupts
-  cli();
-  attachInterrupt(FAULT_IN, fault_catch, CHANGE);
-  sei();
+  // cli();
+  // attachInterrupt(FAULT_IN, fault_catch, CHANGE);
+  // enable interrups
+  // sei();
 }
 
 void loop() {
   pedal_power = 4 * analogRead(PEDAL_IN);
   analogWrite(PWM_OUT1, pedal_power);
 
-  if (!fault) {
-    digitalWrite(FAULT_OUT, HIGH);
-  }
+  digitalWrite(FAULT_OUT, digitalRead(FAULT_IN));
 }
