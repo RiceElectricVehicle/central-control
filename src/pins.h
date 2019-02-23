@@ -7,8 +7,8 @@
 // PWM Outputs
 #define PWM_LA 30
 #define PWM_HA 29
-#define PWM_LB 36
-#define PWM_HB 35
+#define PWM_HB 36
+#define PWM_LB 35
 
 // active low input from gatedriver Over Current Protection (OCP) Status
 #define OCP_INA 24
