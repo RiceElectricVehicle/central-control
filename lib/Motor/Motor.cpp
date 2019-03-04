@@ -19,7 +19,7 @@ Motor::Motor(byte output_pin, byte current_pin)
 
 void Motor::update_power() {
   current = current_sense.get_current();
-  measured_power = current * voltage;
+  measured_power = current;
   // Ideally, we'd like to call this here. But this is an ISR.
   // pid_obj.Compute();
 }
