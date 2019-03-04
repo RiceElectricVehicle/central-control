@@ -3,9 +3,7 @@
 #define CURRENTSENSE_H
 class CurrentSense {
  public:
-  CurrentSense(uint8_t newCurrentPin, float newRes);
-
-  float resistance;
+  CurrentSense(uint8_t newCurrentPin);
 
   uint8_t currentPin;
 
