@@ -2,28 +2,44 @@
 #define PINS_H
 
 // LED teensy status
-#define STATUS 32
+#define STATUS 31
 
-// Pins 30, 29 are on same timer channel for PWM
-#define PWM_OUT1 30
-#define PWM_OUT2 29
+// PWM Outputs
+#define PWM_LA 30
+#define PWM_HA 29
+#define PWM_HB 36
+#define PWM_LB 35
 
-// active low input from gatedriver showing status
-#define FAULT_IN 24
+// active low input from gatedriver Over Current Protection (OCP) Status
+#define OCP_INA 24
+#define OCP_INB 26
 
-// LED to represent gatedriver underVoltage/overCurrent status
-#define FAULT_OUT 7
+// LED to represent gatedriver OCP Status
+#define OCP_OUTA 7
+#define OCP_OUTB 6
 
-// A0 - used for current sense opamp input
-#define CURRENT_IN1 14
-#define CURRENT_IN2 14  // Need to figure out
-#define VOLTAGE_IN1 14  // Need to figure out
-#define VOLTAGE_IN2 14  // Need to figure out
+// Current Sense inputs from halfbridges
+#define CURRENT_INA 14
+#define CURRENT_INB 15
 
-// A1 - used for pedal position input
+// Encoder pins.
+#define ENCXA 3
+#define ENCXB 4
+#define ENCXZ 5
+#define ENCYA 32
+#define ENCYB 25
+#define ENCYZ 28
+
+// General control I/O
 #define PEDAL_IN 16
-#define GPIO2 2
-#define GPIO3 1
-#define GPIO4 0
+#define BRAKE 2
+#define GPIO0 0
+
+// OLED pins
+#define D_RST 8
+#define DC    9
+#define CS    10
+#define MOSI  11
+#define SCLK  13
 
 #endif  // PINS_H
