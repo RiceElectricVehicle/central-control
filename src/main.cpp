@@ -7,7 +7,7 @@
 
 #define PWM_FREQ 10000
 
-// Motor motor1(PWM_OUT1, CURRENT_IN1, VOLTAGE_IN1);
+// Motor motor1(PWM_LA, CURRENT_IN1, VOLTAGE_IN1);
 // Motor motor2(PWM_OUT2, CURRENT_IN2, VOLTAGE_IN2);
 volatile bool fault = false;
 double pedal_power;
@@ -23,18 +23,24 @@ void fault_catch() {
 }
 
 void setup() {
-  pinMode(PWM_OUT1, OUTPUT);
-  digitalWrite(PWM_OUT1, HIGH);
+
+  pinMode(PWM_LA, OUTPUT);
+  pinMode(PWM_LB, OUTPUT);
+  digitalWrite(PWM_LA, HIGH);
+  digitalWrite(PWM_LB, HIGH);
   // set PWM frequency, (not 10kHz, 14k is chosen due to H/W)
-  analogWriteFrequency(PWM_OUT1, PWM_FREQ);
+  analogWriteFrequency(PWM_LA, PWM_FREQ);
+  analogWriteFrequency(PWM_LB, PWM_FREQ);
   // analogWrite takes values from 0-4095, 4096 for HIGH
   analogWriteResolution(12);
 
   logger.init(115200);
 
   pinMode(STATUS, OUTPUT);
-  pinMode(FAULT_OUT, OUTPUT);
-  pinMode(FAULT_IN, INPUT);
+  pinMode(OCP_OUTA, OUTPUT);
+  pinMode(OCP_OUTB, OUTPUT);
+  pinMode(OCP_INA, INPUT);
+  pinMode(OCP_INB, INPUT);
 
   // logger.logg("Setup Done");
 
@@ -54,7 +60,9 @@ void setup() {
 
 void loop() {
   pedal_power = 4 * analogRead(PEDAL_IN);
-  analogWrite(PWM_OUT1, pedal_power);
+  analogWrite(PWM_LA, pedal_power);
+  analogWrite(PWM_LB, pedal_power);
 
-  digitalWrite(FAULT_OUT, digitalRead(FAULT_IN));
+  digitalWrite(OCP_OUTA, digitalRead(OCP_INA));
+  digitalWrite(OCP_OUTB, digitalRead(OCP_INB));
 }
