@@ -6,8 +6,6 @@
 
 #define PWM_FREQ 14648.437
 
-IntervalTimer pidTimer;
-IntervalTimer getPower;
 Motor motorA(PWM_LA, CURRENT_INA);
 Motor motorB(PWM_LB, CURRENT_INB);
 volatile long revolutions;
