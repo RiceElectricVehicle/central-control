@@ -84,6 +84,8 @@ void loop() {
 
   analogWrite(PWM_LA, pedal_power);
   analogWrite(PWM_LB, pedal_power);
+  sprintf(buffer, "Current reading: %u", analogRead(CURRENT_INB));
+  logger.logg(buffer);
   // digitalWrite(OCP_OUTA, digitalRead(OCP_INA));
   // digitalWrite(OCP_OUTB, digitalRead(OCP_INB));
 }
