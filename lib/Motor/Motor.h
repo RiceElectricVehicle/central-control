@@ -28,7 +28,7 @@ class Motor {
   void set_zero();
   double get_current();
   double get_voltage(double current_duty_cycle);
-  int get_duty_cycle();
+  double get_duty_cycle();
   void start();
 };
 

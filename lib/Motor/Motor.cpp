@@ -27,7 +27,7 @@ double Motor::get_current() {
 }
 
 void Motor::update_pid_input() {
-  pid_input = get_current() * (BAT_V * get_duty_cycle()) / 100.0;
+  pid_input = get_current() * (BAT_V * get_duty_cycle());
   // Ideally, we'd like to call this here. But this is an ISR.
   // pid_obj.Compute();
 }
@@ -52,4 +52,8 @@ void Motor::set_zero() {
 void Motor::start() {
   pid_obj.SetOutputLimits(0, 4095);
   pid_obj.SetMode(AUTOMATIC);
+}
+
+double Motor::get_duty_cycle() {
+  return pid_output / 4095;
 }
