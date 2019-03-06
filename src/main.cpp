@@ -6,6 +6,7 @@
 #include <pins.h>
 
 #define PWM_FREQ 10000
+#define PWM_MAX 2460
 
 // Motor motor1(PWM_LA, CURRENT_IN1, VOLTAGE_IN1);
 // Motor motor2(PWM_OUT2, CURRENT_IN2, VOLTAGE_IN2);
@@ -42,14 +43,18 @@ void setup() {
   pinMode(OCP_INA, INPUT);
   pinMode(OCP_INB, INPUT);
 
-  // logger.logg("Setup Done");
+  logger.logg("Setup Done");
 
   // blink LED
-  // logger.logi("Blinking satus LED");
-  // digitalWrite(STATUS, HIGH);
-  // delay(200);
-  // digitalWrite(STATUS, LOW);
-  // delay(200);
+  logger.logi("Blinking satus LED");
+  digitalWrite(STATUS, HIGH);
+  digitalWrite(OCP_OUTA, HIGH);
+  digitalWrite(OCP_OUTB, HIGH);
+  delay(200);
+  digitalWrite(STATUS, LOW);
+  digitalWrite(OCP_OUTA, LOW);
+  digitalWrite(OCP_OUTB, LOW);
+  delay(200);
 
   // disable interrupts
   // cli();
@@ -58,11 +63,27 @@ void setup() {
   // sei();
 }
 
+char buffer[50];
 void loop() {
-  pedal_power = 4 * analogRead(PEDAL_IN);
+  // pedal_power = 4 * analogRead(PEDAL_IN);
+  // for (int i = 0; i < 4096; i++) {
+  //   analogWrite(PWM_LA, i);
+  //   analogWrite(PWM_LB, i);
+  //   delay(1);
+  // }
+  // for (int i = 4095;i >= 0; i--) {
+  //   analogWrite(PWM_LA, i);
+  //   analogWrite(PWM_LB, i);
+  //   delay(1);
+  // }
+
+  // pedal_power = map(analogRead(PEDAL_IN), 550, 900, 4095, PWM_MAX);
+  pedal_power = map(analogRead(PEDAL_IN), 550, 900, 4095, 0);
+  sprintf(buffer, "Pedal reading: %f", pedal_power);
+  logger.logg(buffer);
+
   analogWrite(PWM_LA, pedal_power);
   analogWrite(PWM_LB, pedal_power);
-
-  digitalWrite(OCP_OUTA, digitalRead(OCP_INA));
-  digitalWrite(OCP_OUTB, digitalRead(OCP_INB));
+  // digitalWrite(OCP_OUTA, digitalRead(OCP_INA));
+  // digitalWrite(OCP_OUTB, digitalRead(OCP_INB));
 }
