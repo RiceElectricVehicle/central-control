@@ -60,7 +60,7 @@ void setup() {
   // enable interrups
   sei();
   // Start screen
-  OLED_screen.init();
+  OLED_screen.init(&rpm);
   motorA.start();
   motorB.start();
 }
