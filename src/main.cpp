@@ -4,18 +4,18 @@
 #include <avr/io.h>
 #include <pins.h>
 #include <Encoder.h>
+#include <OLED.h>
 
 #define PWM_FREQ 14648.437
 
-<<<<<<< HEAD
+
 // Motor motor1(PWM_OUT1, CURRENT_IN1, VOLTAGE_IN1);
 // Motor motor2(PWM_OUT2, CURRENT_IN2, VOLTAGE_IN2);
 Encoder encoder(ENCXA, ENCXB);
-=======
+OLED OLED_screen;
 Motor motorA(PWM_LA, CURRENT_INA);
 Motor motorB(PWM_LB, CURRENT_INB);
 volatile long revolutions;
->>>>>>> 3e3ccd009b5fb1df5571ed54dea4774d89ef1879
 volatile bool brk;
 double pedal_power;
 double rpm;
@@ -26,13 +26,11 @@ void setup() {
   digitalWrite(PWM_LA, HIGH);
   digitalWrite(PWM_LB, HIGH);
   // set PWM frequency, (not 10kHz, 14k is chosen due to H/W)
-<<<<<<< HEAD
   // analogWriteFrequency(PWM_OUT1, PWM_FREQ);
   // analogWrite takes values from 0-4095, 4096 for HIGH
   analogWriteResolution(12);
   brk == false;
   Serial.begin(115200);
-=======
   analogWriteFrequency(PWM_LA, PWM_FREQ);
   analogWriteFrequency(PWM_LB, PWM_FREQ);
   // analogWrite takes values from 0-4095, 4096 for HIGH
@@ -61,14 +59,14 @@ void setup() {
   attachInterrupt(ENCXZ, enc_isr, RISING);
   // enable interrups
   sei();
+  // Start screen
+  OLED_screen.init();
   motorA.start();
   motorB.start();
->>>>>>> 3e3ccd009b5fb1df5571ed54dea4774d89ef1879
 }
 
 void loop() {
   // Get power setting from pedal
-<<<<<<< HEAD
   pedal_power = analogRead(PEDAL_IN);
   // motor1.set_power(pedal_power);
   // motor2.set_power(pedal_power);
@@ -79,11 +77,11 @@ void loop() {
   int value = encoder.get_value();
   Serial.println(value);
   delay(100);
-=======
   pedal_power = map(analogRead(PEDAL_IN), 550, 900, 0, 4096);
   if (brk == true) {
     motorA.set_zero();
     motorB.set_zero();
+    OLED_screen.display_breaking();
   } else {
     motorA.update_pid_input();
     motorB.update_pid_input();
@@ -95,7 +93,7 @@ void loop() {
     motorB.set_pwm();
   }
   rpm = get_rpm(millis());
-
+  OLED_screen.display_rotate();
 }
 
 void brake_isr() {
@@ -114,5 +112,4 @@ double get_rpm(uint32_t time_now) {
   double rpm_new = revolutions / (60 * (time_now - time_old));
   time_old = millis();
   return rpm_new;
->>>>>>> 3e3ccd009b5fb1df5571ed54dea4774d89ef1879
 }
