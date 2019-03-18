@@ -20,6 +20,24 @@ volatile bool brk;
 double pedal_power;
 double rpm;
 
+void brake_isr() {
+  if (brk)
+    brk = false;
+  else
+    brk = true;
+}
+
+void enc_isr() {
+  revolutions++;
+}
+
+double get_rpm(uint32_t time_now) {
+  static uint32_t time_old = 0;
+  double rpm_new = revolutions / (60 * (time_now - time_old));
+  time_old = millis();
+  return rpm_new;
+}
+
 void setup() {
   pinMode(PWM_LA, OUTPUT);
   pinMode(PWM_LB, OUTPUT);
@@ -94,22 +112,4 @@ void loop() {
   }
   rpm = get_rpm(millis());
   OLED_screen.display_rotate();
-}
-
-void brake_isr() {
-  if (brk)
-    brk = false;
-  else
-    brk = true;
-}
-
-void enc_isr() {
-  revolutions++;
-}
-
-double get_rpm(uint32_t time_now) {
-  static uint32_t time_old = 0;
-  double rpm_new = revolutions / (60 * (time_now - time_old));
-  time_old = millis();
-  return rpm_new;
 }

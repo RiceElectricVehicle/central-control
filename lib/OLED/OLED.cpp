@@ -10,6 +10,7 @@ OLED::OLED()
   screen_width = 0;
   cursor_x = 0;
   cursor_y = 0;
+  time_millis = 0;
 }
 
 void OLED::set_cursors()
@@ -38,7 +39,6 @@ void OLED::init(double* rpm)
 
 void OLED::display_breaking()
 {
-  screen_object.clear();
   screen_object.setFont(u8g2_font_inr38_mf);
   string_width = screen_object.getStrWidth("Breaking");
   OLED::set_cursors();
@@ -52,7 +52,6 @@ void OLED::display_breaking()
 
 void OLED::display_rpm()
 {
-  screen_object.clear();
   screen_object.setFont(u8g2_font_inr38_mf);
   int now_rpm = *rpm_address;
   // Haven't thought of a better way to get string length. It is a placeholder.
@@ -69,7 +68,6 @@ void OLED::display_rpm()
 
 void OLED::display_speed()
 {
-  screen_object.clear();
   screen_object.setFont(u8g2_font_inr49_mf);
   int now_rpm = *rpm_address;
   // Need to figure out the way to calculate speed from rpm
@@ -88,8 +86,12 @@ void OLED::display_speed()
 
 void OLED::display_rotate()
 {
-  OLED::display_speed();
-  delay(5000);
-  OLED::display_rpm();
-  delay(5000);
+  time_millis = millis();
+  if ((time_millis / 1000) % 10 < 5)
+  {
+    OLED::display_speed();
+  } else
+  {
+    OLED::display_rpm();
+  }
 }

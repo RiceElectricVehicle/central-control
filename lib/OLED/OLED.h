@@ -7,13 +7,13 @@
 
 class OLED{
 private:
-  // U8G2 screen_object;
   U8G2_SSD1322_NHD_256X64_1_4W_HW_SPI screen_object;
   int screen_height;
   int screen_width;
   volatile int cursor_x;
   volatile int cursor_y;
   volatile int string_width;
+  volatile unsigned long time_millis;
   double* rpm_address;
   void set_cursors();
 
