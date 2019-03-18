@@ -22,6 +22,7 @@ void OLED::init(double* rpm)
 {
   rpm_address = rpm;
   screen_object.begin();
+  screen_object.setFont(u8g2_font_inr24_mf);
   screen_height = screen_object.getDisplayHeight();
   screen_width = screen_object.getDisplayWidth();
   string_width = screen_object.getStrWidth("Hello World!");
@@ -31,7 +32,6 @@ void OLED::init(double* rpm)
   do
   {
     screen_object.setCursor(cursor_x, cursor_y);
-    screen_object.setFont(u8g2_font_inr30_mf);
     screen_object.print("Hello World!");
   } while (screen_object.nextPage());
 }
