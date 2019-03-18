@@ -3,7 +3,6 @@
 #include <avr/interrupt.h>
 #include <avr/io.h>
 #include <pins.h>
-#include <Encoder.h>
 #include <OLED.h>
 
 #define PWM_FREQ 14648.437
@@ -11,7 +10,7 @@
 
 // Motor motor1(PWM_OUT1, CURRENT_IN1, VOLTAGE_IN1);
 // Motor motor2(PWM_OUT2, CURRENT_IN2, VOLTAGE_IN2);
-Encoder encoder(ENCXA, ENCXB);
+// Encoder encoder(ENCXA, ENCXB);
 OLED OLED_screen;
 Motor motorA(PWM_LA, CURRENT_INA);
 Motor motorB(PWM_LB, CURRENT_INB);
@@ -92,8 +91,8 @@ void loop() {
   //   motor1.set_power(0);
   //   motor2.set_power(0);
   // }
-  int value = encoder.get_value();
-  Serial.println(value);
+  // int value = encoder.get_value();
+  // Serial.println(value);
   delay(100);
   pedal_power = map(analogRead(PEDAL_IN), 550, 900, 0, 4096);
   if (brk == true) {
