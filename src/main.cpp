@@ -108,7 +108,7 @@ void loop() {
     // Update PWM outputs.
     motorA.set_pwm();
     motorB.set_pwm();
+    OLED_screen.display_rotate();
   }
   rpm = get_rpm(millis());
-  OLED_screen.display_rotate();
 }
