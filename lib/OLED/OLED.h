@@ -15,6 +15,8 @@ private:
   volatile int string_width;
   volatile unsigned long time_millis;
   const double speed_constant = 0.06098735739; // (d*pi*60)/63300
+  const int motor_gear_ratio = 4;
+  const double wheel_gear_ratio = 0.8;
   double* rpm_address;
   void set_cursors();
 
