@@ -1,11 +1,14 @@
 #include <Arduino.h>
 #include <Motor.h>
+#include <OLED.h>
 #include <avr/interrupt.h>
 #include <avr/io.h>
 #include <pins.h>
 #include <PID_v1.h>
 
 #define PWM_FREQ 14648.437
+
+OLED OLED_screen;
 
 volatile long revolutions;
 volatile bool brk;
@@ -26,7 +29,7 @@ void pidSetup();
 void powerUpBlink();
 void enc_isr();
 void brake_isr();
-double get_rpm();
+double get_rpm(uint32_t time_now);
 
 
 void setup() {
@@ -50,6 +53,8 @@ void setup() {
   Serial.println("PID setup");
   pidSetup();
   Serial.println("Setup done");
+  // Start the screen
+  OLED_screen.init(&rpm);
 }
 
 void loop() {
@@ -58,6 +63,8 @@ void loop() {
   if (brk == true) {
     motorA.set_zero();
     motorB.set_zero();
+    // Display breaking
+    OLED_screen.display_breaking();
   } else {
     pid_inA = motorA.get_current() * motorA.get_voltage();
     pid_inB = motorB.get_current() * motorB.get_voltage();
@@ -69,6 +76,8 @@ void loop() {
     // // Update PWM outputs.
     motorA.set_pwm(pid_outA);
     motorB.set_pwm(pid_outB);
+    // Display speed and rpm
+    OLED_screen.display_rotate();
   }
   rpm = get_rpm(millis());
 }
