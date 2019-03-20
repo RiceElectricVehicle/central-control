@@ -51,7 +51,7 @@ void setup() {
   digitalWrite(OCP_OUTA, HIGH);
   digitalWrite(OCP_OUTB, HIGH);
   delay(200);
-  digitalWrite(STATUS, LOW);
+  // digitalWrite(STATUS, LOW);
   digitalWrite(OCP_OUTA, LOW);
   digitalWrite(OCP_OUTB, LOW);
   delay(200);
@@ -63,6 +63,7 @@ void setup() {
   // sei();
 }
 
+int current_read;
 char buffer[50];
 void loop() {
   // pedal_power = 4 * analogRead(PEDAL_IN);
@@ -77,14 +78,19 @@ void loop() {
   //   delay(1);
   // }
 
-  // pedal_power = map(analogRead(PEDAL_IN), 550, 900, 4095, PWM_MAX);
   pedal_power = map(analogRead(PEDAL_IN), 550, 900, 4095, 0);
-  sprintf(buffer, "Pedal reading: %f", pedal_power);
-  logger.logg(buffer);
+  // sprintf(buffer, "Pedal reading: %f", pedal_power);
+  // logger.logg(buffer);
 
   analogWrite(PWM_LA, pedal_power);
   analogWrite(PWM_LB, pedal_power);
-  sprintf(buffer, "Current reading: %u", analogRead(CURRENT_INB));
+  current_read = analogRead(CURRENT_INA);
+  // Serial.print(1050);
+  // Serial.print("\t");
+  Serial.print(current_read);
+  // Serial.print("\t");
+  // Serial.println(-5);
+  sprintf(buffer, "Current reading: %u", current_read);
   logger.logg(buffer);
   // digitalWrite(OCP_OUTA, digitalRead(OCP_INA));
   // digitalWrite(OCP_OUTB, digitalRead(OCP_INB));
