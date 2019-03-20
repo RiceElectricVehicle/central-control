@@ -14,6 +14,7 @@ private:
   volatile int cursor_y;
   volatile int string_width;
   volatile unsigned long time_millis;
+  const double speed_constant = 0.06098735739; // (d*pi*60)/63300
   double* rpm_address;
   void set_cursors();
 

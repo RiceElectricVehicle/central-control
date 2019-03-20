@@ -54,6 +54,7 @@ void OLED::display_rpm()
 {
   screen_object.setFont(u8g2_font_inr38_mf);
   int now_rpm = *rpm_address;
+  now_rpm *= 4;
   // Haven't thought of a better way to get string length. It is a placeholder.
   string_width = screen_object.getStrWidth("1000 rpm");
   OLED::set_cursors();
@@ -70,8 +71,7 @@ void OLED::display_speed()
 {
   screen_object.setFont(u8g2_font_inr49_mf);
   int now_rpm = *rpm_address;
-  // Need to figure out the way to calculate speed from rpm
-  int now_speed = now_rpm / 100;
+  int now_speed = (int)(now_rpm * 0.8 * speed_constant);
   // Haven't thought of a better way to get string length. It is a placeholder.
   string_width = screen_object.getStrWidth("60 mph");
   OLED::set_cursors();
