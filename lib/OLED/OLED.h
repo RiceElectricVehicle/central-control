@@ -17,12 +17,12 @@ private:
   const double speed_constant = 0.06098735739; // (d*pi*60)/63300
   const int motor_gear_ratio = 4;
   const double wheel_gear_ratio = 0.8;
-  double* rpm_address;
+  volatile double* rpm_address;
   void set_cursors();
 
 public:
   OLED();
-  void init(double* rpm);
+  void init(volatile double* rpm);
   void display_breaking();
   void display_rpm();
   void display_speed();

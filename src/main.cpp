@@ -9,11 +9,12 @@
 #define PWM_FREQ 14648.437
 
 OLED OLED_screen;
+IntervalTimer encoder_timer;
 
 volatile long revolutions;
 volatile bool brk;
 double pedal_power;
-double rpm;
+volatile double rpm;
 
 double pid_inA, pid_outA, pid_setA;
 double pid_inB, pid_outB, pid_setB;
@@ -29,11 +30,12 @@ void pidSetup();
 void powerUpBlink();
 void enc_isr();
 void brake_isr();
-double get_rpm(uint32_t time_now);
+void get_rpm();
 
 
 void setup() {
   delay(3000);
+  encoder_timer.begin(get_rpm, 1000000);
   Serial.begin(115200);
   Serial.println("Starting");
   Serial.println("Pin setup");
@@ -79,7 +81,6 @@ void loop() {
     // Display speed and rpm
     OLED_screen.display_rotate();
   }
-  rpm = get_rpm(millis());
 }
 
 void pinSetup() {
@@ -132,12 +133,12 @@ void brake_isr() {
 }
 
 void enc_isr() {
-  revolutions++;
+  revolutions = revolutions + 1;
 }
 
-double get_rpm(uint32_t time_now) {
-  static uint32_t time_old = 0;
-  double rpm_new = revolutions / (60 * (time_now - time_old));
-  time_old = millis();
-  return rpm_new;
+void get_rpm() {
+  cli();
+  rpm = revolutions * 60;
+  revolutions = 0;
+  sei();
 }

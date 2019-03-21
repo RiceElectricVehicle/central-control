@@ -24,7 +24,7 @@ void OLED::set_cursors()
   cursor_y = screen_height / 2;
 }
 
-void OLED::init(double* rpm)
+void OLED::init(volatile double* rpm)
 {
   /*
   Take in a pointer to rpm and initializa the screen
