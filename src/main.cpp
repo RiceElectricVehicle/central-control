@@ -89,6 +89,11 @@ void loop() {
     motorB.set_pwm(pid_outB);
     // Display speed and rpm
     OLED_screen.display_rotate();
+    Serial.print("Current A: ");
+    Serial.print(motorA.get_current('A'));
+    Serial.print("\t");
+    Serial.print("Current B: ");
+    Serial.println(motorB.get_current('B'));
   }
 }
 
