@@ -11,16 +11,12 @@ Motor::Motor(byte output_pin, byte current_pin) {
 
 double Motor::get_current(char channel) {
   int adc = analogRead(motor_current_pin);
-  switch (channel) {
-    case 'A':
-    {
-      return 0.08035 * adc - 8.29045;
-    }
-    case 'B':
-    {
-      return 0.0809733 * adc - 9.048853;
-    }
-  }
+  if (channel == 'A')
+    return 0.08035 * adc - 8.29045;
+  else if (channel == 'B')
+    return 0.0809733 * adc - 9.048853;
+  else
+    return -1;
 }
 
 void Motor::set_pwm(int dc) {
