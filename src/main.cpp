@@ -13,6 +13,8 @@ IntervalTimer encoder_timer;
 
 volatile long revolutions;
 volatile bool brk;
+int pedal_adc;
+int fan_speed;
 double pedal_power;
 volatile double rpm;
 
@@ -60,16 +62,23 @@ void setup() {
 }
 
 void loop() {
-  // Get power setting from pedal
-  pedal_power = map(analogRead(PEDAL_IN), 550, 900, 4090, 0);
+  pedal_adc = analogRead(PEDAL_IN);
+  if (pedal_adc < 650)
+    fan_speed = 0;
+  else
+    fan_speed = map(pedal_adc, 550, 900, 700, 2000);
+  analogWrite(FAN1, fan_speed);
+  analogWrite(FAN2, fan_speed);
+  // Get power setting from pedal 1-1000 Watts.
+  pedal_power = map(pedal_adc, 550, 900, 0, 1000);
   if (brk == true) {
     motorA.set_zero();
     motorB.set_zero();
     // Display breaking
     OLED_screen.display_breaking();
   } else {
-    pid_inA = motorA.get_current() * motorA.get_voltage();
-    pid_inB = motorB.get_current() * motorB.get_voltage();
+    pid_inA = motorA.get_current('A') * motorA.get_voltage();
+    pid_inB = motorB.get_current('B') * motorB.get_voltage();
     pid_setA = pedal_power;
     pid_setB = pedal_power;
     // Run PID computations.
@@ -87,6 +96,7 @@ void pinSetup() {
   // Gate Driver outputs
   pinMode(PWM_LA, OUTPUT);
   pinMode(PWM_LB, OUTPUT);
+  // Pull high to turn off output (already pulled up, but be safe)
   digitalWrite(PWM_LA, HIGH);
   digitalWrite(PWM_LB, HIGH);
   // Status LEDs
@@ -95,12 +105,15 @@ void pinSetup() {
   pinMode(OCP_OUTB, OUTPUT);
   pinMode(OCP_INA, INPUT);
   pinMode(OCP_INB, INPUT);
+  pinMode(FAN1, OUTPUT);
+  pinMode(FAN2, OUTPUT);
 }
 
 void pwmSetup() {
-  // set PWM frequency, (not 10kHz, 14k is chosen due to H/W)
   analogWriteFrequency(PWM_LA, PWM_FREQ);
   analogWriteFrequency(PWM_LB, PWM_FREQ);
+  analogWriteFrequency(FAN1, PWM_FREQ);
+  analogWriteFrequency(FAN2, PWM_FREQ);
   // analogWrite takes values from 0-4095, 4096 for HIGH
   analogWriteResolution(12);
 }
