@@ -19,12 +19,12 @@
 #define OCP_OUTB 6
 
 // Current Sense inputs from halfbridges
-#define CURRENT_INA 15
-#define CURRENT_INB 14
+#define CURRENT_INA 14
+#define CURRENT_INB 15
 
 // Encoder pins.
-#define ENCXA 3
-#define ENCXB 4
+#define FAN1 3
+#define FAN2 4
 #define ENCXZ 5
 #define ENCYA 32
 #define ENCYB 25
