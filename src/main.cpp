@@ -86,7 +86,7 @@ void loop() {
   // }
 
   pedal_adc = analogRead(PEDAL_IN);
-  pedal_power = map(pedal_adc, 550, 900, 4095, 0);
+  pedal_power = map(pedal_adc, 600, 900, 4095, 0);
   fan_speed = map(pedal_adc, 550, 900, 700, 1000);
   // sprintf(buffer, "Pedal reading: %f", pedal_power);
   // logger.logg(buffer);
