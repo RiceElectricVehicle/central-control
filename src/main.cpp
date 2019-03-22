@@ -54,7 +54,7 @@ void setup() {
 
 void loop() {
   // Get power setting from pedal
-  pedal_power = map(analogRead(PEDAL_IN), 550, 900, 0, 4096);
+  pedal_power = map(analogRead(PEDAL_IN), 550, 900, 4090, 0);
   if (brk == true) {
     motorA.set_zero();
     motorB.set_zero();
@@ -63,10 +63,10 @@ void loop() {
     pid_inB = motorB.get_current() * motorB.get_voltage();
     pid_setA = pedal_power;
     pid_setB = pedal_power;
-    // // Run PID computations.
+    // Run PID computations.
     pidA.Compute();
     pidB.Compute();
-    // // Update PWM outputs.
+    // Update PWM outputs.
     motorA.set_pwm(pid_outA);
     motorB.set_pwm(pid_outB);
   }
