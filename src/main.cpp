@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <Motor.h>
+#include <OLED.h>
 #include <avr/interrupt.h>
 #include <avr/io.h>
 #include <pins.h>
@@ -7,10 +8,13 @@
 
 #define PWM_FREQ 14648.437
 
+OLED OLED_screen;
+IntervalTimer encoder_timer;
+
 volatile long revolutions;
 volatile bool brk;
 double pedal_power;
-double rpm;
+volatile double rpm;
 
 double pid_inA, pid_outA, pid_setA;
 double pid_inB, pid_outB, pid_setB;
@@ -26,11 +30,12 @@ void pidSetup();
 void powerUpBlink();
 void enc_isr();
 void brake_isr();
-double get_rpm();
+void get_rpm();
 
 
 void setup() {
   delay(3000);
+  encoder_timer.begin(get_rpm, 1000000);
   Serial.begin(115200);
   Serial.println("Starting");
   Serial.println("Pin setup");
@@ -44,12 +49,14 @@ void setup() {
   cli();
   // attachInterrupt(FAULT_IN, fault_catch, CHANGE);
   attachInterrupt(BRAKE, brake_isr, CHANGE);
-  attachInterrupt(ENCXZ, enc_isr, RISING);
+  attachInterrupt(ENCYZ, enc_isr, RISING);
   // enable interrups
   sei();
   Serial.println("PID setup");
   pidSetup();
   Serial.println("Setup done");
+  // Start the screen
+  OLED_screen.init(&rpm);
 }
 
 void loop() {
@@ -58,6 +65,8 @@ void loop() {
   if (brk == true) {
     motorA.set_zero();
     motorB.set_zero();
+    // Display breaking
+    OLED_screen.display_breaking();
   } else {
     pid_inA = motorA.get_current() * motorA.get_voltage();
     pid_inB = motorB.get_current() * motorB.get_voltage();
@@ -69,8 +78,9 @@ void loop() {
     // Update PWM outputs.
     motorA.set_pwm(pid_outA);
     motorB.set_pwm(pid_outB);
+    // Display speed and rpm
+    OLED_screen.display_rotate();
   }
-  rpm = get_rpm(millis());
 }
 
 void pinSetup() {
@@ -123,12 +133,12 @@ void brake_isr() {
 }
 
 void enc_isr() {
-  revolutions++;
+  revolutions = revolutions + 1;
 }
 
-double get_rpm(uint32_t time_now) {
-  static uint32_t time_old = 0;
-  double rpm_new = revolutions / (60 * (time_now - time_old));
-  time_old = millis();
-  return rpm_new;
+void get_rpm() {
+  cli();
+  rpm = revolutions * 60;
+  revolutions = 0;
+  sei();
 }
