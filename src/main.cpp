@@ -49,7 +49,7 @@ void setup() {
   cli();
   // attachInterrupt(FAULT_IN, fault_catch, CHANGE);
   attachInterrupt(BRAKE, brake_isr, CHANGE);
-  attachInterrupt(ENCXZ, enc_isr, RISING);
+  attachInterrupt(ENCYZ, enc_isr, RISING);
   // enable interrups
   sei();
   Serial.println("PID setup");
