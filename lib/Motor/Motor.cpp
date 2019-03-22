@@ -9,14 +9,18 @@ Motor::Motor(byte output_pin, byte current_pin) {
   motor_pwm = 0;
 }
 
-double Motor::get_current() {
-  double val = 3.3 * analogRead(motor_current_pin) / 1023.0;
-  // Remove op amp gain
-  val = val / 11;
-  // Account for averaging effect of low pass filter.
-  val = 2 * val;
-  // I = V / R, R = .004 -> 1/R = 250
-  return 250 * val;
+double Motor::get_current(char channel) {
+  int adc = analogRead(motor_current_pin);
+  switch (channel) {
+    case 'A':
+    {
+      return 0.08035 * adc - 8.29045;
+    }
+    case 'B':
+    {
+      return 0.0809733 * adc - 9.048853;
+    }
+  }
 }
 
 void Motor::set_pwm(int dc) {

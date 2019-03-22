@@ -18,7 +18,7 @@ class Motor
   Motor(byte output_pin, byte current_pin);
   void set_pwm(int dc);
   void set_zero();
-  double get_current();
+  double get_current(char channel);
   double get_voltage();
   double get_duty_cycle();
   void start();
