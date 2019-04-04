@@ -12,7 +12,7 @@ OLED OLED_screen;
 IntervalTimer encoder_timer;
 
 volatile long revolutions;
-volatile bool brk;
+volatile bool brk = false;
 int pedal_adc;
 int fan_speed;
 double pedal_power;
@@ -36,65 +36,76 @@ void get_rpm();
 
 
 void setup() {
-  delay(3000);
-  encoder_timer.begin(get_rpm, 1000000);
+  // delay(3000);
+  // encoder_timer.begin(get_rpm, 1000000);
   Serial.begin(115200);
-  Serial.println("Starting");
-  Serial.println("Pin setup");
+  // Serial.println("Starting");
+  // Serial.println("Pin setup");
   pinSetup();
-  Serial.println("PWM setup");
+  // Serial.println("PWM setup");
   pwmSetup();
-  Serial.println("Blink");
+  // Serial.println("Blink");
   powerUpBlink();
-  Serial.println("Interrupt setup");
-  // disable interrupts
-  cli();
-  // attachInterrupt(FAULT_IN, fault_catch, CHANGE);
-  attachInterrupt(BRAKE, brake_isr, CHANGE);
-  attachInterrupt(ENCYZ, enc_isr, RISING);
-  // enable interrups
-  sei();
-  Serial.println("PID setup");
-  pidSetup();
-  Serial.println("Setup done");
-  // Start the screen
-  OLED_screen.init(&rpm);
+  // Serial.println("Interrupt setup");
+  // // disable interrupts
+  // cli();
+  // // attachInterrupt(FAULT_IN, fault_catch, CHANGE);
+  // // attachInterrupt(BRAKE, brake_isr, CHANGE);
+  // attachInterrupt(ENCYZ, enc_isr, RISING);
+  // // enable interrups
+  // sei();
+  // Serial.println("PID setup");
+  // pidSetup();
+  // Serial.println("Setup done");
+  // // Start the screen
+  // OLED_screen.init(&rpm);
+  pinMode(CURRENT_INA, INPUT);
+  pinMode(CURRENT_INB, INPUT);
 }
 
 void loop() {
-  pedal_adc = analogRead(PEDAL_IN);
-  if (pedal_adc < 650)
-    fan_speed = 0;
-  else
-    fan_speed = map(pedal_adc, 550, 900, 700, 2000);
-  analogWrite(FAN1, fan_speed);
-  analogWrite(FAN2, fan_speed);
+  analogWrite(PWM_LA, 2048);
+  analogWrite(PWM_LB, 2048);
+  // pedal_adc = analogRead(PEDAL_IN);
+  // if (pedal_adc < 650)
+  //   fan_speed = 0;
+  // else
+  //   fan_speed = map(pedal_adc, 550, 900, 700, 2000);
+  // analogWrite(FAN1, fan_speed);
+  // analogWrite(FAN2, fan_speed);
   // Get power setting from pedal 1-1000 Watts.
-  pedal_power = map(pedal_adc, 550, 900, 0, 1000);
-  if (brk == true) {
-    motorA.set_zero();
-    motorB.set_zero();
-    // Display breaking
-    OLED_screen.display_breaking();
-  } else {
-    pid_inA = motorA.get_current('A') * motorA.get_voltage();
-    pid_inB = motorB.get_current('B') * motorB.get_voltage();
-    pid_setA = pedal_power;
-    pid_setB = pedal_power;
-    // Run PID computations.
-    pidA.Compute();
-    pidB.Compute();
-    // Update PWM outputs.
-    motorA.set_pwm(pid_outA);
-    motorB.set_pwm(pid_outB);
-    // Display speed and rpm
-    OLED_screen.display_rotate();
-    Serial.print("Current A: ");
-    Serial.print(motorA.get_current('A'));
-    Serial.print("\t");
-    Serial.print("Current B: ");
-    Serial.println(motorB.get_current('B'));
-  }
+  // pedal_power = map(pedal_adc, 550, 900, 0, 1000);
+  // pedal_power = 500;
+
+  // if (brk == true) {
+  //   motorA.set_zero();
+  //   motorB.set_zero();
+  //   // Display breaking
+  //   OLED_screen.display_breaking();
+  // } else {
+  //   pid_inA = motorA.get_current('A') * motorA.get_voltage();
+  //   pid_inB = motorB.get_current('B') * motorB.get_voltage();
+  //   pid_setA = pedal_power;
+  //   pid_setB = pedal_power;
+  //   // Run PID computations.
+  //   pidA.Compute();
+  //   pidB.Compute();
+  //   // Update PWM outputs.
+  //   motorA.set_pwm(pid_outA);
+  //   motorB.set_pwm(pid_outB);
+  //   // Display speed and rpm
+  //   OLED_screen.display_rotate();
+  //   Serial.print("Current A: ");
+  //   Serial.print(motorA.get_current('A'));
+  //   Serial.print("\t");
+  //   Serial.print("Current B: ");
+  //   Serial.println(motorB.get_current('B'));
+  // }
+  int get_A = analogRead(CURRENT_INA);
+  int get_B = analogRead(CURRENT_INB);
+  Serial.println(get_A);
+  Serial.println(get_B);
+  delay(1000);
 }
 
 void pinSetup() {
