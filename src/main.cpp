@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <Logger.h>
 #include <Motor.h>
+#include <OLED.h>
 #include <avr/interrupt.h>
 #include <avr/io.h>
 #include <pins.h>
@@ -14,8 +15,13 @@ volatile bool fault = false;
 double pedal_power;
 int fan_speed;
 int pedal_adc;
+volatile long revolutions;
+volatile bool brk;
+volatile double rpm;
 
 Logger logger("REV MC2018", "info");
+OLED OLED_screen;
+IntervalTimer encoder_timer;
 
 void fault_catch() {
   if (fault) {
@@ -23,6 +29,24 @@ void fault_catch() {
   } else {
     fault = true;
   }
+}
+
+void brake_isr() {
+  if (brk)
+    brk = false;
+  else
+    brk = true;
+}
+
+void enc_isr() {
+  revolutions = revolutions + 1;
+}
+
+void get_rpm() {
+  cli();
+  rpm = revolutions * 60;
+  revolutions = 0;
+  sei();
 }
 
 void setup() {
@@ -67,6 +91,11 @@ void setup() {
   // attachInterrupt(FAULT_IN, fault_catch, CHANGE);
   // enable interrups
   // sei();
+
+  encoder_timer.begin(get_rpm, 1000000);
+  attachInterrupt(BRAKE, brake_isr, CHANGE);
+  attachInterrupt(ENCYZ, enc_isr, RISING);
+  OLED_screen.init(&rpm);
 }
 
 int current_readA;
@@ -91,8 +120,17 @@ void loop() {
   // sprintf(buffer, "Pedal reading: %f", pedal_power);
   // logger.logg(buffer);
 
+  if (brk == true) {
+  // Display breaking
+  analogWrite(PWM_LA, 4096);
+  analogWrite(PWM_LB, 4096);
+  OLED_screen.display_breaking();
+} else
+{
   analogWrite(PWM_LA, pedal_power);
   analogWrite(PWM_LB, pedal_power);
+  OLED_screen.display_rotate();
+}
   if (pedal_adc < 650) {
     fan_speed = 0;
   } else {
