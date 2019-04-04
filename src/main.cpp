@@ -92,6 +92,7 @@ void setup() {
   // enable interrups
   // sei();
 
+  Serial.begin(115200);
   encoder_timer.begin(get_rpm, 1000000);
   attachInterrupt(BRAKE, brake_isr, CHANGE);
   attachInterrupt(ENCYZ, enc_isr, RISING);
@@ -115,6 +116,7 @@ void loop() {
   // }
 
   pedal_adc = analogRead(PEDAL_IN);
+  Serial.println(pedal_adc);
   pedal_power = map(pedal_adc, 600, 900, 4095, 0);
   fan_speed = map(pedal_adc, 550, 900, 700, 1000);
   // sprintf(buffer, "Pedal reading: %f", pedal_power);
