@@ -117,8 +117,8 @@ void loop() {
 
   pedal_adc = analogRead(PEDAL_IN);
   Serial.println(pedal_adc);
-  pedal_power = map(pedal_adc, 600, 900, 4095, 0);
-  fan_speed = map(pedal_adc, 550, 900, 700, 1000);
+  pedal_power = map(pedal_adc, 560, 840, 4095, 0);
+  fan_speed = map(pedal_adc, 560, 900, 700, 1000);
   // sprintf(buffer, "Pedal reading: %f", pedal_power);
   // logger.logg(buffer);
 
@@ -127,12 +127,12 @@ void loop() {
   analogWrite(PWM_LA, 4096);
   analogWrite(PWM_LB, 4096);
   OLED_screen.display_breaking();
-} else
-{
+  } else {
   analogWrite(PWM_LA, pedal_power);
   analogWrite(PWM_LB, pedal_power);
   OLED_screen.display_rotate();
-}
+  }
+
   if (pedal_adc < 650) {
     fan_speed = 0;
   } else {
