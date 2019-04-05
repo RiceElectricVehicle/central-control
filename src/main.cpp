@@ -69,7 +69,6 @@ void setup() {
   pinMode(OCP_INB, INPUT);
   pinMode(FAN1, OUTPUT);
   pinMode(FAN2, OUTPUT);
-  pinMode(BRAKE, INPUT);
 
 
   // blink LED
@@ -82,21 +81,12 @@ void setup() {
   digitalWrite(OCP_OUTB, LOW);
   delay(200);
 
-  // disable interrupts
-  // cli();
-  // attachInterrupt(FAULT_IN, fault_catch, CHANGE);
-  // enable interrups
-  // sei();
-
   Serial.begin(115200);
   encoder_timer.begin(get_rpm, 1000000);
-  attachInterrupt(BRAKE, brake_isr, CHANGE);
   attachInterrupt(ENCYZ, enc_isr, RISING);
   OLED_screen.init(&rpm);
 }
 
-int current_readA;
-int current_readB;
 void loop() {
 
   pedal_adc = analogRead(PEDAL_IN);
@@ -104,16 +94,9 @@ void loop() {
   pedal_adc = constrain(pedal_adc, 500, 900);
   pedal_power = map(pedal_adc, 560, 840, 4095, 0);
 
-  if (brk == true) {
-    // Display breaking
-    analogWrite(PWM_LA, 4096);
-    analogWrite(PWM_LB, 4096);
-    OLED_screen.display_breaking();
-  } else {
-    analogWrite(PWM_LA, pedal_power);
-    analogWrite(PWM_LB, pedal_power);
-    OLED_screen.display_rotate();
-  }
+  analogWrite(PWM_LA, pedal_power);
+  analogWrite(PWM_LB, pedal_power);
+  OLED_screen.display_rotate();
 
   if (pedal_adc < 650) {
     fan_speed = 0;
@@ -127,16 +110,5 @@ void loop() {
   Serial.print(pedal_power);
   Serial.print("\t\t");
   Serial.println(fan_speed);
-  // current_readA = analogRead(CURRENT_INA);
-  // current_readB = analogRead(CURRENT_INB);
-  // delay(50);
-  // Serial.print(1050);
-  // Serial.print("\t");
-  // Serial.println(current_readA);
-  // Serial.print("\t");
-  // Serial.println(current_readB);
-  // Serial.print("\t");
-  // Serial.println(-5);
-  // digitalWrite(OCP_OUTA, digitalRead(OCP_INA));
-  // digitalWrite(OCP_OUTB, digitalRead(OCP_INB));
+
 }
