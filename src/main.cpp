@@ -1,5 +1,4 @@
 #include <Arduino.h>
-#include <Logger.h>
 #include <Motor.h>
 #include <OLED.h>
 #include <avr/interrupt.h>
@@ -19,7 +18,6 @@ volatile long revolutions;
 volatile bool brk;
 volatile double rpm;
 
-Logger logger("REV MC2018", "info");
 OLED OLED_screen;
 IntervalTimer encoder_timer;
 
@@ -63,7 +61,6 @@ void setup() {
   // analogWrite takes values from 0-4095, 4096 for HIGH
   analogWriteResolution(12);
 
-  logger.init(115200);
 
   pinMode(STATUS, OUTPUT);
   pinMode(OCP_OUTA, OUTPUT);
@@ -72,11 +69,10 @@ void setup() {
   pinMode(OCP_INB, INPUT);
   pinMode(FAN1, OUTPUT);
   pinMode(FAN2, OUTPUT);
+  pinMode(BRAKE, INPUT);
 
-  logger.logg("Setup Done");
 
   // blink LED
-  logger.logi("Blinking satus LED");
   digitalWrite(STATUS, HIGH);
   digitalWrite(OCP_OUTA, HIGH);
   digitalWrite(OCP_OUTB, HIGH);
@@ -101,7 +97,6 @@ void setup() {
 
 int current_readA;
 int current_readB;
-char buffer[50];
 void loop() {
   // pedal_power = 4 * analogRead(PEDAL_IN);
   // for (int i = 0; i < 4096; i++) {
@@ -117,31 +112,29 @@ void loop() {
 
   pedal_adc = analogRead(PEDAL_IN);
   Serial.println(pedal_adc);
+  pedal_adc = constrain(pedal_adc, 500, 900);
   pedal_power = map(pedal_adc, 560, 840, 4095, 0);
-  fan_speed = map(pedal_adc, 560, 900, 700, 1000);
-  // sprintf(buffer, "Pedal reading: %f", pedal_power);
-  // logger.logg(buffer);
 
   if (brk == true) {
-  // Display breaking
-  analogWrite(PWM_LA, 4096);
-  analogWrite(PWM_LB, 4096);
-  OLED_screen.display_breaking();
+    // Display breaking
+    analogWrite(PWM_LA, 4096);
+    analogWrite(PWM_LB, 4096);
+    OLED_screen.display_breaking();
   } else {
-  analogWrite(PWM_LA, pedal_power);
-  analogWrite(PWM_LB, pedal_power);
-  OLED_screen.display_rotate();
+    analogWrite(PWM_LA, pedal_power);
+    analogWrite(PWM_LB, pedal_power);
+    OLED_screen.display_rotate();
   }
 
   if (pedal_adc < 650) {
     fan_speed = 0;
   } else {
-    fan_speed = map(pedal_adc, 550, 900, 700, 2000);
+    fan_speed = map(pedal_adc, 600, 900, 700, 2000);
   }
   analogWrite(FAN1, fan_speed);
   analogWrite(FAN2, fan_speed);
-  current_readA = analogRead(CURRENT_INA);
-  current_readB = analogRead(CURRENT_INB);
+  // current_readA = analogRead(CURRENT_INA);
+  // current_readB = analogRead(CURRENT_INB);
   // delay(50);
   // Serial.print(1050);
   // Serial.print("\t");
@@ -150,8 +143,6 @@ void loop() {
   // Serial.println(current_readB);
   // Serial.print("\t");
   // Serial.println(-5);
-  // sprintf(buffer, "Current reading: %u", current_read);
-  // logger.logg(buffer);
   // digitalWrite(OCP_OUTA, digitalRead(OCP_INA));
   // digitalWrite(OCP_OUTB, digitalRead(OCP_INB));
 }
