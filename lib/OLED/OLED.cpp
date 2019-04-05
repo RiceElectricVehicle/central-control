@@ -52,6 +52,7 @@ void OLED::display_breaking()
   /*
   Display the message "Breaking"
   */
+  screen_object.begin();
   screen_object.setFont(u8g2_font_inr38_mf);
   string_width = screen_object.getStrWidth("Breaking");
   OLED::set_cursors();
@@ -68,6 +69,7 @@ void OLED::display_rpm()
   /*
   Display the current motor rotation speed in terms of rotation per minute
   */
+  screen_object.begin();
   screen_object.setFont(u8g2_font_inr38_mf);
   int now_rpm = *rpm_address;
   // Need to multiply by the gear ratio between motor and encoder
@@ -89,6 +91,7 @@ void OLED::display_speed()
   /*
   Display current speed of the car in terms of mile per hour
   */
+  screen_object.begin();
   screen_object.setFont(u8g2_font_inr49_mf);
   int now_rpm = *rpm_address;
   // Calculte the current speed of the car from rpm data

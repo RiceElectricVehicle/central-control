@@ -116,7 +116,9 @@ void loop() {
   // }
 
   pedal_adc = analogRead(PEDAL_IN);
-  Serial.println(pedal_adc);
+  // Serial.println(pedal_adc);
+  // Serial.println(revolutions);
+  // Serial.println(rpm);
   pedal_power = map(pedal_adc, 560, 840, 4095, 0);
   fan_speed = map(pedal_adc, 560, 900, 700, 1000);
   // sprintf(buffer, "Pedal reading: %f", pedal_power);
