@@ -98,17 +98,6 @@ void setup() {
 int current_readA;
 int current_readB;
 void loop() {
-  // pedal_power = 4 * analogRead(PEDAL_IN);
-  // for (int i = 0; i < 4096; i++) {
-  //   analogWrite(PWM_LA, i);
-  //   analogWrite(PWM_LB, i);
-  //   delay(1);
-  // }
-  // for (int i = 4095;i >= 0; i--) {
-  //   analogWrite(PWM_LA, i);
-  //   analogWrite(PWM_LB, i);
-  //   delay(1);
-  // }
 
   pedal_adc = analogRead(PEDAL_IN);
   Serial.println(pedal_adc);
@@ -133,6 +122,11 @@ void loop() {
   }
   analogWrite(FAN1, fan_speed);
   analogWrite(FAN2, fan_speed);
+  Serial.print(pedal_adc);
+  Serial.print("\t\t");
+  Serial.print(pedal_power);
+  Serial.print("\t\t");
+  Serial.println(fan_speed);
   // current_readA = analogRead(CURRENT_INA);
   // current_readB = analogRead(CURRENT_INB);
   // delay(50);
