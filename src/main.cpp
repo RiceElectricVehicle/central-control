@@ -18,8 +18,8 @@ volatile long revolutions;
 volatile bool brk;
 volatile double rpm;
 
-OLED OLED_screen;
-IntervalTimer encoder_timer;
+// OLED OLED_screen;
+// IntervalTimer encoder_timer;
 
 void fault_catch() {
   if (fault) {
@@ -82,26 +82,31 @@ void setup() {
   delay(200);
 
   Serial.begin(115200);
-  encoder_timer.begin(get_rpm, 1000000);
-  attachInterrupt(ENCYZ, enc_isr, RISING);
-  OLED_screen.init(&rpm);
+  // encoder_timer.begin(get_rpm, 1000000);
+  // attachInterrupt(ENCYZ, enc_isr, RISING);
+  // OLED_screen.init(&rpm);
 }
 
 void loop() {
 
   pedal_adc = analogRead(PEDAL_IN);
-  Serial.println(pedal_adc);
   pedal_adc = constrain(pedal_adc, 500, 900);
-  pedal_power = map(pedal_adc, 560, 840, 4095, 0);
+  pedal_power = map(pedal_adc, 560, 680, 4096, 0);
+  pedal_power = constrain(pedal_power, 0, 4096);
+
+  // 9% duty cycle minimum
+  if (pedal_power > 3800 && pedal_power < 4090) {
+    pedal_power = 3800;
+  }
 
   analogWrite(PWM_LA, pedal_power);
   analogWrite(PWM_LB, pedal_power);
-  OLED_screen.display_rotate();
+  // OLED_screen.display_rotate();
 
   if (pedal_adc < 650) {
     fan_speed = 0;
   } else {
-    fan_speed = map(pedal_adc, 600, 900, 700, 2000);
+    fan_speed = map(pedal_adc, 600, 900, 700, 1300);
   }
   analogWrite(FAN1, fan_speed);
   analogWrite(FAN2, fan_speed);
